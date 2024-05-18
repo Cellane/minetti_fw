@@ -66,7 +66,7 @@ config :mdns_lite,
   # because otherwise any of the devices may respond to nerves.local leading to
   # unpredictable behavior.
 
-  hosts: [:hostname, "nerves"],
+  hosts: [:hostname, "minetti"],
   ttl: 120,
 
   # Advertise the following services over mDNS.
@@ -89,7 +89,7 @@ config :mdns_lite,
   ]
 
 config :minetti_ui, MinettiUiWeb.Endpoint,
-  url: [host: "nerves.local"],
+  url: [host: "minetti.lan"],
   adapter: Bandit.PhoenixAdapter,
   http: [port: 80],
   cache_static_manifest: "priv/static/cache_manifest.json",
