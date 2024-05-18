@@ -53,6 +53,7 @@ defmodule MinettiFirmware.MixProject do
 
       # Dependencies for all targets except :host
       {:nerves_pack, "~> 0.7.0", targets: @all_targets},
+      {:minetti_ui, path: "../minetti_ui", targets: @all_targets, env: Mix.env()},
 
       # Dependencies for specific targets
       # NOTE: It's generally low risk and recommended to follow minor version

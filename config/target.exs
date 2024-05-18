@@ -88,6 +88,21 @@ config :mdns_lite,
     }
   ]
 
+config :minetti_ui, MinettiUiWeb.Endpoint,
+  url: [host: "nerves.local"],
+  adapter: Bandit.PhoenixAdapter,
+  http: [port: 80],
+  cache_static_manifest: "priv/static/cache_manifest.json",
+  secret_key_base: "aMSGysWn+o5iqzGXaLvCrvnpEUMPzijScyDJS/EkeUkAoNjq/0jO44Ts1UJAK07q",
+  live_view: [signing_salt: "d9ijFiUz"],
+  check_origin: false,
+  render_errors: [view: MinettiUiWeb.ErrorView, accepts: ~w(html json), layout: false],
+  pubsub_server: MinettiUi.PubSub,
+  server: true,
+  code_reloader: false
+
+config :phoenix, :json_library, Jason
+
 # Import target specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.
 # Uncomment to use target specific configurations
