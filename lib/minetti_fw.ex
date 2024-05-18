@@ -1,6 +1,6 @@
-defmodule MinettiFirmware do
+defmodule MinettiFw do
   @moduledoc """
-  Documentation for MinettiFirmware.
+  Documentation for MinettiFw.
   """
 
   @doc """
@@ -8,7 +8,7 @@ defmodule MinettiFirmware do
 
   ## Examples
 
-      iex> MinettiFirmware.hello
+      iex> MinettiFw.hello
       :world
 
   """

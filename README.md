@@ -1,4 +1,4 @@
-# MinettiFirmware
+# MinettiFw
 
 **TODO: Add description**
 

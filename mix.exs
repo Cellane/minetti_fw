@@ -1,7 +1,7 @@
-defmodule MinettiFirmware.MixProject do
+defmodule MinettiFw.MixProject do
   use Mix.Project
 
-  @app :minetti_firmware
+  @app :minetti_fw
   @version "0.1.0"
   @all_targets [:rpi0, :minetti_os]
 
@@ -21,7 +21,7 @@ defmodule MinettiFirmware.MixProject do
   # Run "mix help compile.app" to learn about applications.
   def application do
     [
-      mod: {MinettiFirmware.Application, []},
+      mod: {MinettiFw.Application, []},
       extra_applications: [:logger, :runtime_tools]
     ]
   end
