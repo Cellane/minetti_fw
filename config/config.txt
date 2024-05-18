@@ -53,3 +53,6 @@ dtparam=act_led_trigger=heartbeat
 # To turn the LED completely off comment out the previous line and uncomment
 # the next.
 #dtparam=act_led_trigger=none
+
+dtoverlay=gpio-ir,gpio_pin=18
+dtoverlay=gpio-ir-tx,gpio_pin=17
