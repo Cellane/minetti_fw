@@ -18,7 +18,16 @@ defmodule MinettiFw.Application do
         # {MinettiFw.Worker, arg},
       ] ++ children(target())
 
+    prepare_system(target())
+
     Supervisor.start_link(children, opts)
+  end
+
+  def prepare_system(:host) do
+  end
+
+  def prepare_system(_target) do
+    File.mkdir_p("/var/run/lirc")
   end
 
   # List all child processes to be supervised
@@ -35,6 +44,7 @@ defmodule MinettiFw.Application do
       # Children for all targets except host
       # Starts a worker by calling: MinettiFw.Worker.start_link(arg)
       # {MinettiFw.Worker, arg},
+      {MuonTrap.Daemon, ["lircd", ["--nodaemon"]]}
     ]
   end
 
