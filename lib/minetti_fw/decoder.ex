@@ -23,7 +23,8 @@ defmodule MinettiFw.Decoder do
     |> Enum.map(&elem(&1, 0))
     |> Enum.chunk_every(2, 2, :discard)
     |> Enum.map(fn
-      [_pulse, space] when space > 4000 -> "S"
+      [pulse, space] when pulse > 4000 and space > 4000 -> "S"
+      [_pulse, space] when space > 4000 -> "T"
       [_pulse, space] when space > 1000 -> "1"
       [_pulse, _space] -> "0"
     end)
