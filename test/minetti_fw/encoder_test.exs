@@ -188,17 +188,19 @@ defmodule MinettiFw.EncoderTest do
       assert "S110000100011110110111111010000001110010000011011TS110000100011110110111111010000001110010000011011TS110101010110011000000000000000000000000000111011T" =
                Encoder.encode(state)
     end
+
+    test "encodes stop correctly" do
+      state = %State{mode: :off}
+
+      assert "S110000100011110101111011100001001110000000011111TS110000100011110101111011100001001110000000011111T" =
+               Encoder.encode(state)
+    end
   end
 
   describe "encode/1 with special commands" do
     test "encodes swing correctly" do
       assert "S110000100011110101101011100101001110000000011111TS110000100011110101101011100101001110000000011111T" =
                Encoder.encode(:swing)
-    end
-
-    test "encodes stop correctly" do
-      assert "S110000100011110101111011100001001110000000011111TS110000100011110101111011100001001110000000011111T" =
-               Encoder.encode(:stop)
     end
 
     test "encodes vertical direction correctly" do

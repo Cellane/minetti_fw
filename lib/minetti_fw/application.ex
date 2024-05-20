@@ -16,6 +16,7 @@ defmodule MinettiFw.Application do
         # Children for all targets
         # Starts a worker by calling: MinettiFw.Worker.start_link(arg)
         # {MinettiFw.Worker, arg},
+        {MinettiFw.State, []}
       ] ++ children(target())
 
     prepare_system(target())

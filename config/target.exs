@@ -101,6 +101,8 @@ config :minetti_ui, MinettiUiWeb.Endpoint,
   server: true,
   code_reloader: false
 
+config :minetti_ui, :state_server, MinettiFw.State
+
 config :phoenix, :json_library, Jason
 
 # Import target specific config. This must remain at the bottom
