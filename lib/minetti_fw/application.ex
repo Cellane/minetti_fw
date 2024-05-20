@@ -44,7 +44,7 @@ defmodule MinettiFw.Application do
       # Children for all targets except host
       # Starts a worker by calling: MinettiFw.Worker.start_link(arg)
       # {MinettiFw.Worker, arg},
-      {MuonTrap.Daemon, ["lircd", ["--nodaemon"]]}
+      {MuonTrap.Daemon, ["lircd", ["--nodaemon"], [name: :lircd]]}
     ]
   end
 

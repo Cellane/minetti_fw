@@ -1,4 +1,4 @@
-defmodule MinettiFw.ConfigGenerator do
+defmodule MinettiFw.LircConfig do
   @moduledoc """
   Module which takes a string representing binary ones and zeros (& signal separators)
   and generates a configuration file for `irsend`.
@@ -28,7 +28,10 @@ defmodule MinettiFw.ConfigGenerator do
       |> Kernel.<>("\n")
 
     contents = Enum.join([header(), body, footer()])
-    File.write(path, contents)
+
+    path
+    |> File.write(contents)
+    |> tap(fn _ -> reload_lircd() end)
   end
 
   @spec header() :: String.t()
@@ -54,4 +57,11 @@ defmodule MinettiFw.ConfigGenerator do
       end raw_codes
     end remote
     """
+
+  @spec reload_lircd() :: boolean()
+  defp reload_lircd,
+    do:
+      :lircd
+      |> Process.whereis()
+      |> Process.exit(:reload)
 end

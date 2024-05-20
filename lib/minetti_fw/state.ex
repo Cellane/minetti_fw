@@ -10,10 +10,10 @@ defmodule MinettiFw.State do
 
   @type t :: %__MODULE__{
           mode: :cool | :heat | :dry | :fan_only | :auto,
-          temperature: float,
+          temperature: float(),
           fan_speed: :auto | :quiet | :low | :weak | :strong | :super,
-          on_timer: nil | integer,
-          off_timer: nil | integer
+          on_timer: nil | integer(),
+          off_timer: nil | integer()
         }
 
   def set_mode(state, mode) when mode in [:dry, :auto],
