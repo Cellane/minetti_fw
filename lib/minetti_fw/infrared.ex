@@ -1,15 +1,16 @@
-defmodule MinettiFw.LircConfig do
+defmodule MinettiFw.Infrared do
   @moduledoc """
   Module which takes a string representing binary ones and zeros (& signal separators)
-  and generates a configuration file for `irsend`.
+  and blasts it.
   """
 
   @short 530
   @long 1610
   @very_long 4400
 
-  @spec generate(String.t(), String.t()) :: :ok | {:error, File.posix()}
-  def generate(signal, path \\ "/data/MinettiRemote.lircd.conf") do
+  @spec blast(String.t(), String.t()) ::
+          :ok | {:error, File.posix_error()} | {:error, pos_integer()}
+  def blast(signal, path \\ "/etc/lirc/lircd.conf.d/MinettiRemote.lircd.conf") do
     body =
       signal
       |> String.graphemes()
@@ -29,9 +30,16 @@ defmodule MinettiFw.LircConfig do
 
     contents = Enum.join([header(), body, footer()])
 
-    path
-    |> File.write(contents)
-    |> tap(fn _ -> reload_lircd() end)
+    with :ok <- File.write(path, contents),
+         true <- reload_lircd(),
+         :ok <- Process.sleep(500),
+         {_output, 0} <-
+           System.cmd("irsend", ["SEND_ONCE", "MinettiRemote", "fire"], stderr_to_stdout: true) do
+      :ok
+    else
+      {:error, reason} -> {:error, reason}
+      {output, exit_code} -> {:error, {exit_code, output}}
+    end
   end
 
   @spec header() :: String.t()
