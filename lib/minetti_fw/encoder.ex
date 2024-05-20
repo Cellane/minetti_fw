@@ -84,7 +84,7 @@ defmodule MinettiFw.Encoder do
       payload_1,
       invert(payload_1),
       payload_2,
-      invert(payload_2),
+      maybe_invert_payload_2(payload_2, state),
       @segment_finish
     ]
 
@@ -126,8 +126,10 @@ defmodule MinettiFw.Encoder do
   defp encode_speed_legacy(%State{fan_speed: speed}) when speed in [:strong, :super], do: "001"
 
   @spec encode_off_timer(State.t()) :: String.t()
-  # TODO: Implement the remaining cases
   defp encode_off_timer(%State{off_timer: nil}), do: "1111"
+
+  defp encode_off_timer(%State{off_timer: off_timer}),
+    do: off_timer |> convert_timer() |> String.slice(-4, 4)
 
   @spec encode_temperature(State.t()) :: String.t()
   defp encode_temperature(%State{mode: :fan_only}), do: "1110"
@@ -165,10 +167,8 @@ defmodule MinettiFw.Encoder do
   @spec encode_timer_rest(State.t()) :: String.t()
   defp encode_timer_rest(%State{on_timer: on_timer}) when not is_nil(on_timer), do: "11"
 
-  defp encode_timer_rest(%State{off_timer: off_timer}) when not is_nil(off_timer) do
-    # TODO: Implement the off timer overflow
-    "TODO"
-  end
+  defp encode_timer_rest(%State{off_timer: off_timer}) when not is_nil(off_timer),
+    do: off_timer |> convert_timer() |> String.slice(0, 2)
 
   defp encode_timer_rest(_state), do: "00"
 
@@ -205,6 +205,15 @@ defmodule MinettiFw.Encoder do
   defp encode_cool_mode(%State{mode: :cool}), do: "1"
   defp encode_cool_mode(_state), do: "0"
 
+  @spec convert_timer(pos_integer()) :: String.t()
+  defp convert_timer(timer_minutes),
+    do:
+      timer_minutes
+      |> Kernel.div(30)
+      |> Kernel.-(1)
+      |> Integer.to_string(2)
+      |> String.pad_leading(6, "0")
+
   @spec calculate_checksum([String.t()]) :: String.t()
   defp calculate_checksum(data),
     do:
@@ -213,6 +222,12 @@ defmodule MinettiFw.Encoder do
       |> Enum.reduce(0, fn {value, _}, acc -> acc + value end)
       |> Integer.to_string(2)
       |> String.slice(-8, 8)
+
+  @spec maybe_invert_payload_2(String.t(), State.t()) :: String.t()
+  defp maybe_invert_payload_2(_, %State{off_timer: off_timer}) when not is_nil(off_timer),
+    do: "01111111"
+
+  defp maybe_invert_payload_2(payload_2, _state), do: invert(payload_2)
 
   @spec invert(String.t()) :: String.t()
   def invert(bitstring),
