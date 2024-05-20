@@ -15,29 +15,11 @@ defmodule MinettiFw.Encoder do
 
   alias MinettiFw.State
 
-  @type special :: :swing | :stop | :vertical_direction
+  @type special :: :swing | :vertical_direction
 
   @spec encode(State.t() | special()) :: String.t()
   def encode(:swing) do
     payload_1 = "01101011"
-    payload_2 = "11100000"
-
-    code = [
-      @start,
-      @legacy_header,
-      invert(@legacy_header),
-      payload_1,
-      invert(payload_1),
-      payload_2,
-      invert(payload_2),
-      @finish
-    ]
-
-    Enum.join(code ++ code)
-  end
-
-  def encode(:stop) do
-    payload_1 = "01111011"
     payload_2 = "11100000"
 
     code = [
@@ -63,6 +45,24 @@ defmodule MinettiFw.Encoder do
       @start,
       payload_0,
       invert(payload_0),
+      payload_1,
+      invert(payload_1),
+      payload_2,
+      invert(payload_2),
+      @finish
+    ]
+
+    Enum.join(code ++ code)
+  end
+
+  def encode(%State{mode: :off}) do
+    payload_1 = "01111011"
+    payload_2 = "11100000"
+
+    code = [
+      @start,
+      @legacy_header,
+      invert(@legacy_header),
       payload_1,
       invert(payload_1),
       payload_2,
