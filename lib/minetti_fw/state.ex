@@ -14,10 +14,13 @@ defmodule MinettiFw.State do
             off_timer: nil
 
   @valid_modes [:cool, :heat, :dry, :fan_only, :auto, :off]
+
+  @type mode() :: :cool | :heat | :dry | :fan_only | :auto | :off
+  @type fan_speed() :: :auto | :quiet | :low | :weak | :strong | :super
   @type t :: %__MODULE__{
-          mode: :cool | :heat | :dry | :fan_only | :auto | :off,
+          mode: mode(),
           temperature: float(),
-          fan_speed: :auto | :quiet | :low | :weak | :strong | :super,
+          fan_speed: fan_speed(),
           on_timer: nil | integer(),
           off_timer: nil | integer()
         }
@@ -116,13 +119,16 @@ defmodule MinettiFw.State do
     {:noreply, state}
   end
 
+  @spec broadcast(t()) :: t()
   defp broadcast(state) do
     Phoenix.PubSub.broadcast(MinettiUi.PubSub, "state", {:state_changed, state})
     state
   end
 
+  @spec fan_speed_order() :: [fan_speed()]
   defp fan_speed_order, do: [:auto, :quiet, :low, :weak, :strong, :super]
 
+  @spec next_fan_speed(fan_speed()) :: fan_speed()
   defp next_fan_speed(current_speed),
     do:
       fan_speed_order()
@@ -130,6 +136,9 @@ defmodule MinettiFw.State do
       |> Stream.drop_while(&(&1 != current_speed))
       |> Enum.at(1)
 
+  @spec schedule_apply() :: any()
   defp schedule_apply, do: send(self(), :apply)
+
+  @spec schedule_apply_special(MinettiFw.Encoder.special_command()) :: any()
   defp schedule_apply_special(command), do: send(self(), {:apply_special, command})
 end

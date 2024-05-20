@@ -3,34 +3,34 @@ defmodule MinettiFw.Encoder do
   `MinettiFw.Encoder` takes in `MinettiFw.State` and transforms
   it into a string that represents the signal necessary to transmit
   the information. This string can be encoded into a configuration file
-  for `irsend` with `MinettiFw.ConfigGenerator`.
+  for `irsend` with `MinettiFw.Infrared`.
 
   Please note that certain buttons do not transmit the entire state,
   such as a button to turn the A/C off.
   """
-  @start "S"
-  @finish "T"
+  @segment_start "S"
+  @segment_finish "T"
   @legacy_header "11000010"
   @modern_header "11010101"
 
   alias MinettiFw.State
 
-  @type special :: :swing | :vertical_direction
+  @type special_command :: :swing | :vertical_direction
 
-  @spec encode(State.t() | special()) :: String.t()
+  @spec encode(State.t() | special_command()) :: String.t()
   def encode(:swing) do
     payload_1 = "01101011"
     payload_2 = "11100000"
 
     code = [
-      @start,
+      @segment_start,
       @legacy_header,
       invert(@legacy_header),
       payload_1,
       invert(payload_1),
       payload_2,
       invert(payload_2),
-      @finish
+      @segment_finish
     ]
 
     Enum.join(code ++ code)
@@ -42,14 +42,14 @@ defmodule MinettiFw.Encoder do
     payload_2 = "00101100"
 
     code = [
-      @start,
+      @segment_start,
       payload_0,
       invert(payload_0),
       payload_1,
       invert(payload_1),
       payload_2,
       invert(payload_2),
-      @finish
+      @segment_finish
     ]
 
     Enum.join(code ++ code)
@@ -60,14 +60,14 @@ defmodule MinettiFw.Encoder do
     payload_2 = "11100000"
 
     code = [
-      @start,
+      @segment_start,
       @legacy_header,
       invert(@legacy_header),
       payload_1,
       invert(payload_1),
       payload_2,
       invert(payload_2),
-      @finish
+      @segment_finish
     ]
 
     Enum.join(code ++ code)
@@ -78,14 +78,14 @@ defmodule MinettiFw.Encoder do
     payload_2 = encode_payload_2(state)
 
     legacy = [
-      @start,
+      @segment_start,
       @legacy_header,
       invert(@legacy_header),
       payload_1,
       invert(payload_1),
       payload_2,
       invert(payload_2),
-      @finish
+      @segment_finish
     ]
 
     modern =
@@ -104,7 +104,7 @@ defmodule MinettiFw.Encoder do
       )
 
     checksum = calculate_checksum(modern)
-    modern = [@start, modern, checksum, @finish]
+    modern = [@segment_start, modern, checksum, @segment_finish]
 
     Enum.join(legacy ++ legacy ++ modern)
   end

@@ -9,6 +9,10 @@ defmodule MinettiFw.Application do
   def start(_type, _args) do
     # See https://hexdocs.pm/elixir/Supervisor.html
     # for other strategies and supported options
+    # Higher restart tolerancy is necessary because
+    # each button press in the remote control interface
+    # triggers LIRC reload (due to new configuration file)
+    # which is done via process killing.
     opts = [strategy: :one_for_one, name: MinettiFw.Supervisor, max_restarts: 100, max_seconds: 1]
 
     children =
