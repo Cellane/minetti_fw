@@ -24,8 +24,7 @@ defmodule MinettiFw.Infrared do
       |> Enum.map(&Integer.to_string/1)
       |> Enum.map(&String.pad_leading(&1, 9))
       |> Enum.chunk_every(6)
-      |> Enum.map(&Enum.join/1)
-      |> Enum.join("\n")
+      |> Enum.map_join("\n", &Enum.join/1)
       |> Kernel.<>("\n")
 
     contents = Enum.join([header(), body, footer()])
