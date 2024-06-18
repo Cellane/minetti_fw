@@ -46,7 +46,7 @@ config :nerves_ssh,
 #
 # See https://github.com/nerves-networking/vintage_net for more information
 config :vintage_net,
-  regulatory_domain: "00",
+  regulatory_domain: "JP",
   config: [
     {"usb0", %{type: VintageNetDirect}},
     {"eth0",
